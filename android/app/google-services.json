@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "123450606455",
+    "project_id": "autosecuro",
+    "storage_bucket": "autosecuro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123450606455:android:ce7263d14dee71941c9772",
+        "android_client_info": {
+          "package_name": "com.floatex.auto_securo_user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123450606455-nt8evd26c9ruas2veulrbi960n1c8c3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.floatex.auto_securo_user",
+            "certificate_hash": "19f8321ee0f0b070e653911782cc1663ffff98d2"
+          }
+        },
+        {
+          "client_id": "123450606455-2sfnmp9ifhor7ik69iu0p0efeat99j3i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE13iuZi16bUJplia7-29S2IYmr3a8SG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123450606455-2sfnmp9ifhor7ik69iu0p0efeat99j3i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
