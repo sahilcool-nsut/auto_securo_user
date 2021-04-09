@@ -1,3 +1,5 @@
+import 'package:auto_securo_user/create_user/create_profile.dart';
+import 'package:auto_securo_user/main_screens/NavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -41,9 +43,10 @@ class _OTPScreenState extends State<OTPScreen> {
           print("user null");
         }
         if (globals.user.displayName != null) {
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => ScreenName()));
-        } else {}
+           Navigator.pushAndRemoveUntil(context, PageTransition(child:NavBar(),type: PageTransitionType.fade),(route)=>false);
+        } else {
+          Navigator.pushAndRemoveUntil(context, PageTransition(child:CreateProfile(),type: PageTransitionType.fade),(route)=>false);
+        }
       });
     } catch (e) {
       setState(() {
