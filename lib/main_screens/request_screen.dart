@@ -1,7 +1,8 @@
+import 'package:auto_securo_user/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../globals.dart';
+import 'package:auto_securo_user/globals.dart' as globals;
 import 'NavBar.dart';
 
 class RequestScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class RequestScreen extends StatefulWidget {
 class _RequestScreenState extends State<RequestScreen> {
 
   bool _loading = false;
-  bool _noVehicleExists = false;
+  bool _vehicleExists = true;
   bool _showError = false;
   bool _showConfirmation = false;
   TextEditingController _numberPlateController;
@@ -26,7 +27,7 @@ class _RequestScreenState extends State<RequestScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: myAppBar,
+        appBar: globals.myAppBar,
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: SingleChildScrollView(
@@ -60,21 +61,26 @@ class _RequestScreenState extends State<RequestScreen> {
                   child: Text("Request Sent!",style: TextStyle(color: Colors.green),),
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
                       _loading = true;
                     });
-                    if(_noVehicleExists)
+                    _vehicleExists = await DatabaseService().checkVehicleExists(_numberPlateController.text);
+
+                    if(!_vehicleExists)
                       {
                         setState(() {
                           _loading = false;
                           _showError = true;
+                          _showConfirmation = false;
                         });
                       }
                     else
                       {
                         // Send Request
+                       // await DatabaseService().sendRequest(_numberPlateController.text,globals.phoneNumber)
                         setState(() {
+                          _showError = false;
                           _loading = false;
                           _showConfirmation = true;
                         });

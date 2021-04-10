@@ -1,9 +1,16 @@
+import 'package:auto_securo_user/services/database_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr/qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:auto_securo_user/globals.dart' as globals;
 
+
+import '../VehicleInfo.dart';
 import '../globals.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,23 +20,52 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  bool noVehicles = false;     //to be checked in initstate
+  bool noVehicles = true;     //to be checked in initstate
   String userName;            //initialize in initstate
-  bool dataLoaded = true;
+  String house;
+  bool dataLoaded = false;
 
   //fill in initstate
-  List vehicleList=[
-    VehicleInfo("https://www.telegraph.co.uk/content/dam/news/2017/11/11/Lam1_trans_NvBQzQNjv4BqnAdySV0BR-4fDN_-_p756cVfcy8zLGPV4EhRkjQy7tg.jpg", "Lamborghini", "DL4CAC0001", "Sahil Chawla", DateTime.now().toString()),
-    VehicleInfo("https://thedriven.io/wp-content/uploads/2019/06/crophero-jaguarxjgameofdrones22180917-1200x462-800x450.jpg","Jaguar", "888JXJ", "Sahil Chawla", DateTime.now().toString())
-  ];
-
+//  List vehicleList=[
+//    VehicleInfo("https://www.telegraph.co.uk/content/dam/news/2017/11/11/Lam1_trans_NvBQzQNjv4BqnAdySV0BR-4fDN_-_p756cVfcy8zLGPV4EhRkjQy7tg.jpg", "Lamborghini", "DL4CAC0001", "Sahil Chawla", DateTime.now().toString()),
+//    VehicleInfo("https://thedriven.io/wp-content/uploads/2019/06/crophero-jaguarxjgameofdrones22180917-1200x462-800x450.jpg","Jaguar", "888JXJ", "Sahil Chawla", DateTime.now().toString())
+//  ];
+  List vehicleList=[];
   @override
   void initState() {
-    userName = "Sahil Chawla";
 
+    userName = "Sahil Chawla";
+    getVehicleData();
     //fetch data and make dataLoaded = true
 
     super.initState();
+  }
+
+  Future<void> getVehicleData() async{
+
+   vehicleList =   await DatabaseService().getVehiclesData();
+    await FirebaseFirestore.instance.collection('users').doc(globals.phoneNumber).get().then((value){
+    userName = value["fullName"];
+        house = value["house"];
+    });
+
+    print(userName);
+    print(house);
+    print(vehicleList);
+    if(vehicleList.length==0)
+      {
+        setState(() {
+          noVehicles = true;
+          dataLoaded = true;
+        });
+      }
+    else
+      {
+        setState(() {
+          noVehicles = false;
+          dataLoaded = true;
+        });
+      }
   }
 
   @override
@@ -126,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       child: Center(
                         child: CachedNetworkImage(
-                          imageUrl: vehicleList[index].carPhoto,
+                          imageUrl: vehicleList[index].vehiclePhoto,
                           height: MediaQuery.of(context).size.height * 0.2,
                           width: double.infinity,
                         ),
@@ -195,19 +231,3 @@ class _HomeScreenState extends State<HomeScreen> {
 
 }
 
-class VehicleInfo
-{
-  String carPhoto;
-  String name;
-  String numberPlate;
-  String ownerName;
-  String timeStamp;
-  VehicleInfo(carPhoto,name,numberPlate,ownerName,timeStamp)
-  {
-    this.carPhoto = carPhoto;
-    this.name = name;
-    this.numberPlate = numberPlate;
-    this.ownerName = ownerName;
-    this.timeStamp = timeStamp;
-  }
-}

@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:auto_securo_user/main_screens/NavBar.dart';
+import 'package:auto_securo_user/services/database_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:auto_securo_user/globals.dart' as globals;
 
 import '../globals.dart';
 
@@ -40,6 +42,11 @@ class _CreateProfileState extends State<CreateProfile> {
     _nameController.dispose();
     _houseController.dispose();
   }
+
+  Future<void> updateProfile() async{
+    await DatabaseService().updateProfile(_nameController.text,_houseController.text);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -233,12 +240,12 @@ class _CreateProfileState extends State<CreateProfile> {
                     GestureDetector(
                       onTap: _enableButton != true
                           ? null
-                          : () {
+                          : () async {
                               setState(() {
                                 _loading = true;
                               });
                               //update profile in firebase
-                              //updateProfile()
+                              await updateProfile();
                               //then navigate
                               Navigator.pushReplacement(
                                   context,

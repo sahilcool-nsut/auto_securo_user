@@ -1,8 +1,11 @@
+import 'package:auto_securo_user/create_user/create_profile.dart';
+import 'package:auto_securo_user/main_screens/NavBar.dart';
 import 'package:auto_securo_user/screens/login_screens/otp_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:auto_securo_user/globals.dart' as globals;
+import 'package:auto_securo_user/services/database_services.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -22,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       verificationCompleted: (AuthCredential phoneAuthCredential) async {
         print('phone number verified via device');
         globals.phoneAuthCredential = phoneAuthCredential;
-        _login();
+        _login(phoneNumber);
       },
       codeSent: (String verificationId, [int code]) {
         setState(() {
@@ -45,19 +48,19 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _login() async {
+  Future<void> _login(String phoneNumber) async {
     try {
       await FirebaseAuth.instance
           .signInWithCredential(globals.phoneAuthCredential)
-          .then((UserCredential authRes) {
+          .then((UserCredential authRes) async{
+            //checks if user exists, if doesnt, creates user collection
         globals.user = authRes.user;
-        if (globals.user.displayName != null) {
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => Navbar()));
-        } else {
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => UsernameScreen()));
-        }
+        //displayName only used to check this, baaki koi user info hogi, to wo firestore se hi uthayenge
+//        if (globals.user.displayName != null) {
+//          Navigator.push(context, PageTransition(child: NavBar(), type: PageTransitionType.fade));
+//        } else {
+//          Navigator.push(context, PageTransition(child: CreateProfile(), type: PageTransitionType.fade));
+//        }
       });
     } catch (e) {
       setState(() {

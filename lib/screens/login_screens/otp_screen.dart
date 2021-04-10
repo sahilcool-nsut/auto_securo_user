@@ -1,5 +1,6 @@
 import 'package:auto_securo_user/create_user/create_profile.dart';
 import 'package:auto_securo_user/main_screens/NavBar.dart';
+import 'package:auto_securo_user/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -32,8 +33,11 @@ class _OTPScreenState extends State<OTPScreen> {
     try {
       await FirebaseAuth.instance
           .signInWithCredential(globals.phoneAuthCredential)
-          .then((UserCredential authRes) {
+          .then((UserCredential authRes) async{
+
         globals.user = authRes.user;
+        globals.phoneNumber = widget.phoneNo;
+        await DatabaseService().checkUserCollectionExists();
         setState(() {
           loading = false;
         });
@@ -45,7 +49,7 @@ class _OTPScreenState extends State<OTPScreen> {
         if (globals.user.displayName != null) {
            Navigator.pushAndRemoveUntil(context, PageTransition(child:NavBar(),type: PageTransitionType.fade),(route)=>false);
         } else {
-          Navigator.pushAndRemoveUntil(context, PageTransition(child:CreateProfile(),type: PageTransitionType.fade),(route)=>false);
+          Navigator.pushAndRemoveUntil(context, PageTransition(child:CreateProfile(phoneNumber: widget.phoneNo,),type: PageTransitionType.fade),(route)=>false);
         }
       });
     } catch (e) {
@@ -61,6 +65,7 @@ class _OTPScreenState extends State<OTPScreen> {
   @override
   void initState() {
     super.initState();
+
     _controller = TextEditingController();
     _enableButton = false;
     _timer = true;
