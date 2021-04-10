@@ -75,7 +75,7 @@ class DatabaseService {
             );
           });
         }
-      
+
       });
       print(tempList);
       print("huehue");
