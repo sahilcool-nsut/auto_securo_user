@@ -1,6 +1,7 @@
+import 'package:auto_securo_user/services/database_services.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-
+import 'package:auto_securo_user/globals.dart' as globals;
 import '../globals.dart';
 
 
@@ -13,16 +14,35 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
 
   bool _noNotifications=true;
-  bool _dataLoaded = true;
+  bool _dataLoaded = false;
   //Json.decode karke nikallenge list from firebase, store bhi as json hi karenge(from admin app)
-  List notificationData=[{'vehicle':'Lamborghini','numberPlate':'DL4CAC0001','time':formatDate(DateTime.now(), [HH, ':', nn,])},{'vehicle':'Lamborghini','numberPlate':'DL4CAC0001','time':formatDate(DateTime.now(), [HH, ':', nn,])}];
-
+ // List notificationData=[{'vehicle':'Lamborghini','numberPlate':'DL4CAC0001','time':formatDate(DateTime.now(), [HH, ':', nn,])},{'vehicle':'Lamborghini','numberPlate':'DL4CAC0001','time':formatDate(DateTime.now(), [HH, ':', nn,])}];
+  List notificationData=[];
   @override
   void initState() {
 
-
+    getNotifications();
     super.initState();
   }
+
+  Future<void> getNotifications() async{
+    notificationData = await DatabaseService().getNotifications(globals.phoneNumber);
+    if(notificationData.length==0)
+      {
+        setState(() {
+          _noNotifications = true;
+          _dataLoaded = true;
+        });
+      }
+    else
+      {
+        setState(() {
+          _noNotifications = false;
+          _dataLoaded = true;
+        });
+      }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,13 +99,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         child: RichText(
                           text: TextSpan(
                             style: TextStyle(color: Colors.black,fontFamily: 'Montserrat'),
-                            text: 'Your ',
+                            text: 'Your vehicle numbered ',
                             children: <TextSpan>[
-                              TextSpan(text:notificationData[index]["vehicle"], style: TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text:" numbered "),
                               TextSpan(text:notificationData[index]["numberPlate"], style: TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(text:" left at "),
-                              TextSpan(text:notificationData[index]["time"], style: TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text:formatDate(DateTime.parse(notificationData[index]["timeStamp"]), [dd, '/',mm, '/', yyyy, ', ',HH, ':', nn,]).toString(), style: TextStyle(fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),

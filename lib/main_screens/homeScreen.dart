@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await FirebaseFirestore.instance.collection('users').doc(globals.phoneNumber).get().then((value){
     userName = value["fullName"];
         house = value["house"];
+        globals.name = userName;
     });
 
     print(userName);

@@ -13,6 +13,8 @@ class DatabaseService {
   // collection reference
   final CollectionReference usersCollection =
   FirebaseFirestore.instance.collection('users');
+  final CollectionReference vehiclesCollection =
+  FirebaseFirestore.instance.collection('vehicles');
 
   Future<void> checkUserCollectionExists () async
   {
@@ -72,8 +74,7 @@ class DatabaseService {
 
   }
   Future<bool> checkVehicleExists(String numberPlate) async {
-    final CollectionReference vehiclesCollection =
-    FirebaseFirestore.instance.collection('vehicles');
+
     var vehicleDoc = await vehiclesCollection.doc(numberPlate).get();
     print(numberPlate);
     print("numberPlate from check Vehicle");
@@ -86,6 +87,136 @@ class DatabaseService {
       {
         return false;
       }
+  }
+
+  Future<bool> sendRequest(String numberPlate,String currentUserPhoneNumber) async
+  {
+    try{
+      var vehicleDoc = await vehiclesCollection.doc(numberPlate).get();
+      String ownerPhoneNumber = vehicleDoc.data()["ownerPhone"];
+      print(ownerPhoneNumber);
+      print("Owner Phone Number from sendRequest");
+      await usersCollection.doc(ownerPhoneNumber).collection("requests").add({
+        "requestFrom": currentUserPhoneNumber,
+        "numberPlate":numberPlate,
+        "requestFromName":globals.name,
+      });
+      return true;
+    }
+    catch(e)
+    {
+      print(e);
+      return false;
+    }
+
+  }
+
+  Future<List<Map<dynamic,dynamic>>> getRequests(String currentUserPhoneNumber) async
+  {
+    List<Map<dynamic,dynamic>> tempList=[];
+    try{
+      var requstsDocs = await usersCollection.doc(currentUserPhoneNumber).collection("requests").get().then((snapshot) {
+              var data = snapshot.docs;
+              if(snapshot.docs.length==0)
+                {
+                  return tempList;
+                }
+              else
+                {
+                  data.forEach((element) {
+                    tempList.add(
+                        {
+                          'requestFrom':element["requestFrom"],
+                          'numberPlate':element["numberPlate"],
+                          'requestFromName':element["requestFromName"],
+                          'requestID':element.reference.id,
+                      }
+                    );
+                  });
+                }
+      });
+      return tempList;
+    }
+    catch(e)
+    {
+      print(e);
+      return [];
+    }
+
+  }
+
+  Future<bool> acceptRequest(String numberPlate, String targetPhoneNumber,String requestID) async{
+
+    try
+    {
+      var temp = await usersCollection.doc(targetPhoneNumber).collection("vehicles").add({
+        "numberPlate":numberPlate,
+        "owner":false,
+      });
+      var temp2 = await vehiclesCollection.doc(numberPlate).collection("users").add({
+        "phoneNumber":targetPhoneNumber,
+        "owner":false,
+      });
+
+      deleteRequest(requestID);
+
+      return true;
+    }
+    catch(e)
+    {
+      print(e);
+      return false;
+    }
+
+  }
+  Future<bool> deleteRequest(String requestID) async {
+
+    try
+    {
+      await usersCollection.doc(globals.phoneNumber).collection("requests").doc(requestID).delete();
+      print("inside delete");
+      return true;
+    }
+    catch(e)
+    {
+      print(e);
+      return false;
+    }
+
+  }
+
+
+  Future<List<Map<dynamic,dynamic>>> getNotifications(String currentUserPhoneNumber) async
+  {
+    print(DateTime.now());
+    List<Map<dynamic,dynamic>> tempList=[];
+    try{
+      var notificationDocs = await usersCollection.doc(currentUserPhoneNumber).collection("notifications").orderBy("timeStamp",descending: true).get().then((snapshot) {
+        var data = snapshot.docs;
+        if(snapshot.docs.length==0)
+        {
+          return tempList;
+        }
+        else
+        {
+          data.forEach((element) {
+            tempList.add(
+                {
+                  'numberPlate':element["numberPlate"],
+                  'timeStamp':element["timeStamp"],
+                }
+            );
+          });
+        }
+      });
+      return tempList;
+    }
+    catch(e)
+    {
+      print(e);
+      return [];
+    }
+
   }
 
 }

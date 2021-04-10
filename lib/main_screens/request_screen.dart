@@ -54,7 +54,7 @@ class _RequestScreenState extends State<RequestScreen> {
 
                 Visibility(
                   visible: _showError,
-                    child: Text("No Vehicle Found!",style: TextStyle(color: Colors.red.shade400),),
+                    child: Text("No Vehicle Found or Vehicle already Linked!",style: TextStyle(color: Colors.red.shade400),),
                 ),
                 Visibility(
                   visible: _showConfirmation,
@@ -78,13 +78,21 @@ class _RequestScreenState extends State<RequestScreen> {
                     else
                       {
                         // Send Request
-                       // await DatabaseService().sendRequest(_numberPlateController.text,globals.phoneNumber)
-                        setState(() {
-                          _showError = false;
-                          _loading = false;
-                          _showConfirmation = true;
-                        });
-
+                        bool success = await DatabaseService().sendRequest(_numberPlateController.text,globals.phoneNumber);
+                        if(success)
+                          {
+                            setState(() {
+                              _showError = false;
+                              _loading = false;
+                              _showConfirmation = true;
+                            });
+                          }
+                        else
+                          {
+                            _loading = false;
+                            _showError = true;
+                            _showConfirmation = false;
+                          }
                       }
 
                   },

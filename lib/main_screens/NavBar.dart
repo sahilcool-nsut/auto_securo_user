@@ -1,3 +1,5 @@
+import 'package:auto_securo_user/main_screens/request_notifications.dart';
+
 import 'homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
@@ -46,7 +48,8 @@ class _NavBarState extends State<NavBar> {
             //   ),
             // ),
           ),
-          TabData(iconData: Icons.notifications, title: "History")
+          TabData(iconData: Icons.notifications, title: "Requests"),
+          TabData(iconData: Icons.history, title: "History")
         ],
         initialSelection: 0,
         key: bottomNavigationKey,
@@ -65,6 +68,8 @@ class _NavBarState extends State<NavBar> {
         return HomeScreen();
       case 1:
         return RequestScreen();
+      case 2:
+        return RequestNotificationScreen();
       default:
         return NotificationScreen();
     }
