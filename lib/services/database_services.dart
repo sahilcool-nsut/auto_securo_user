@@ -79,7 +79,10 @@ class DatabaseService {
     print(numberPlate);
     print("numberPlate from check Vehicle");
     print(vehicleDoc);
-    if(vehicleDoc.exists)
+    bool vehicleExists = vehicleDoc.exists;
+    var userVehicleDoc = await usersCollection.doc(globals.phoneNumber).collection("vehicles").where("numberPlate",isEqualTo: numberPlate).get();
+    bool alreadyLinked = userVehicleDoc.docs.isEmpty?false:true;
+    if(vehicleDoc.exists && !alreadyLinked)
       {
         return true;
       }
