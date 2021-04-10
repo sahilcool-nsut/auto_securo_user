@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //    VehicleInfo("https://www.telegraph.co.uk/content/dam/news/2017/11/11/Lam1_trans_NvBQzQNjv4BqnAdySV0BR-4fDN_-_p756cVfcy8zLGPV4EhRkjQy7tg.jpg", "Lamborghini", "DL4CAC0001", "Sahil Chawla", DateTime.now().toString()),
 //    VehicleInfo("https://thedriven.io/wp-content/uploads/2019/06/crophero-jaguarxjgameofdrones22180917-1200x462-800x450.jpg","Jaguar", "888JXJ", "Sahil Chawla", DateTime.now().toString())
 //  ];
-  List vehicleList=[];
+  List<VehicleInfo> vehicleList=[];
   @override
   void initState() {
 
@@ -43,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> getVehicleData() async{
 
-   vehicleList =   await DatabaseService().getVehiclesData();
+   vehicleList = await DatabaseService().getVehiclesData();
+   print(vehicleList);
     await FirebaseFirestore.instance.collection('users').doc(globals.phoneNumber).get().then((value){
     userName = value["fullName"];
         house = value["house"];

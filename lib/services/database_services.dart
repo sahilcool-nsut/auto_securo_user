@@ -50,27 +50,43 @@ class DatabaseService {
   }
   Future<List<VehicleInfo>> getVehiclesData() async{
     List<VehicleInfo> tempList =[];
-    await usersCollection.doc(globals.phoneNumber).collection('vehicles').get().then((QuerySnapshot snapshot){
-      print(snapshot.docs);
-      if(snapshot.docs.length==0)
-        {
+    try {
+      await usersCollection.doc(globals.phoneNumber)
+          .collection('vehicles')
+          .get()
+          .then((QuerySnapshot snapshot) async {
+        print(snapshot.docs);
+        if (snapshot.docs.length == 0) {
           print("Empty");
           return tempList;
         }
-      final CollectionReference vehiclesCollection =
-      FirebaseFirestore.instance.collection('vehicles');
+        final CollectionReference vehiclesCollection =
+        FirebaseFirestore.instance.collection('vehicles');
 
-      snapshot.docs.forEach((element) async{
-        print(element["numberPlate"]);
-        var vehicleInfo = await vehiclesCollection.doc(element["numberPlate"]).get();
-        tempList.add(
-            VehicleInfo(vehicleInfo["vehiclePhoto"],vehicleInfo["vehicleName"],vehicleInfo["numberPlate"], vehicleInfo["ownerName"])
-        );
+        for (var element in snapshot.docs) {
+          print(element["numberPlate"]);
+          var vehicleInfo = await vehiclesCollection.doc(element["numberPlate"])
+              .get()
+              .then((value) {
+                print("adding value");
+            tempList.add(
+                VehicleInfo(value["vehiclePhoto"], value["vehicleName"],
+                    value["numberPlate"], value["ownerName"])
+            );
+          });
+        }
+      
       });
-    });
-    print(tempList);
-    print("huehue");
-    return tempList;
+      print(tempList);
+      print("huehue");
+      return tempList;
+    }
+    catch(e)
+    {
+    print("error in getvehicels");
+    print(e);
+    return [];
+    }
 
   }
   Future<bool> checkVehicleExists(String numberPlate) async {
