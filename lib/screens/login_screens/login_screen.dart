@@ -52,8 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await FirebaseAuth.instance
           .signInWithCredential(globals.phoneAuthCredential)
-          .then((UserCredential authRes) async{
-            //checks if user exists, if doesnt, creates user collection
+          .then((UserCredential authRes) async {
+        //checks if user exists, if doesnt, creates user collection
         globals.user = authRes.user;
         //displayName only used to check this, baaki koi user info hogi, to wo firestore se hi uthayenge
 //        if (globals.user.displayName != null) {
@@ -102,12 +102,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 30,
+                height: 10,
               ),
               Container(
                 child: Text(
@@ -123,9 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Please enter your phone number to access the User Portal",
                   style: TextStyle(fontSize: 16),
                 ),
-              ),
-              SizedBox(
-                height: 40,
               ),
               SizedBox(
                 height: 20,
@@ -155,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 50),
+              Spacer(),
               GestureDetector(
                 onTap: _enableButton != true
                     ? null
