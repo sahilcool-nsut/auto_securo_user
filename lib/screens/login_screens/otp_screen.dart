@@ -33,8 +33,7 @@ class _OTPScreenState extends State<OTPScreen> {
     try {
       await FirebaseAuth.instance
           .signInWithCredential(globals.phoneAuthCredential)
-          .then((UserCredential authRes) async{
-
+          .then((UserCredential authRes) async {
         globals.user = authRes.user;
         globals.phoneNumber = widget.phoneNo;
         await DatabaseService().checkUserCollectionExists();
@@ -47,9 +46,19 @@ class _OTPScreenState extends State<OTPScreen> {
           print("user null");
         }
         if (globals.user.displayName != null) {
-           Navigator.pushAndRemoveUntil(context, PageTransition(child:NavBar(),type: PageTransitionType.fade),(route)=>false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              PageTransition(child: NavBar(), type: PageTransitionType.fade),
+              (route) => false);
         } else {
-          Navigator.pushAndRemoveUntil(context, PageTransition(child:CreateProfile(phoneNumber: widget.phoneNo,),type: PageTransitionType.fade),(route)=>false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              PageTransition(
+                  child: CreateProfile(
+                    phoneNumber: widget.phoneNo,
+                  ),
+                  type: PageTransitionType.fade),
+              (route) => false);
         }
       });
     } catch (e) {
@@ -142,7 +151,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   handleTap();
                 },
                 pinTheme: PinTheme(
-                  selectedColor: Color(0xFFC1F1DF),
+                  selectedColor: Colors.red.withOpacity(0.3),
                   inactiveColor: Colors.grey,
                   activeColor: Colors.red,
                   shape: PinCodeFieldShape.box,
