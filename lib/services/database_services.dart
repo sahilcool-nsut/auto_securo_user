@@ -205,6 +205,7 @@ class DatabaseService {
           data.forEach((element) {
             tempList.add(
                 {
+                  'userName':element["userName"],
                   'numberPlate':element["numberPlate"],
                   'timeStamp':element["timeStamp"],
                 }

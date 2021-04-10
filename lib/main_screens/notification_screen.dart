@@ -102,8 +102,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             text: 'Your vehicle numbered ',
                             children: <TextSpan>[
                               TextSpan(text:notificationData[index]["numberPlate"], style: TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text:" left at "),
-                              TextSpan(text:formatDate(DateTime.parse(notificationData[index]["timeStamp"]), [dd, '/',mm, '/', yyyy, ', ',HH, ':', nn,]).toString(), style: TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text:" was taken out of the society by "),
+                              TextSpan(text:notificationData[index]["userName"], style: TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text:" on " ),
+                              TextSpan(text:notificationData[index]["timeStamp"], style: TextStyle(fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
