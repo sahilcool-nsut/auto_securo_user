@@ -99,7 +99,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         child: RichText(
                           text: TextSpan(
                             style: TextStyle(color: Colors.black,fontFamily: 'Montserrat'),
-                            text: 'Your vehicle numbered ',
+                            text: notificationData[index]["userName"]=="custom"?'⚠CAUTION⚠ Your vehicle numbered ':'Your vehicle numbered',
                             children: <TextSpan>[
                               TextSpan(text:notificationData[index]["numberPlate"], style: TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(text:" was taken out of the society by "),
