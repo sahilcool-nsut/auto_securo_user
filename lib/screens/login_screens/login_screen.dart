@@ -1,6 +1,8 @@
 import 'package:auto_securo_user/create_user/create_profile.dart';
 import 'package:auto_securo_user/main_screens/NavBar.dart';
+import 'package:auto_securo_user/main_screens/notification_screen.dart';
 import 'package:auto_securo_user/screens/login_screens/otp_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _enableButton;
   TextEditingController _controller;
   FirebaseAuth auth = FirebaseAuth.instance;
+
 
   Future<void> _submitPhoneNumber(String phoneNumber) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
@@ -77,8 +80,33 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _controller = TextEditingController();
     _enableButton = false;
+
+    checkNotification();
   }
 
+  Future checkNotification () async{
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    if(initialMessage!=null)
+      {
+        // If the message also contains a data property with a "type" of "chat",
+        // navigate to a chat screen
+        if (initialMessage?.data['type'] == 'vehicle') {
+          Navigator.push(context, PageTransition(child: NotificationScreen(), type: PageTransitionType.fade));
+        }
+
+        // Also handle any interaction when the app is in the background via a
+        // Stream listener
+        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+          if (initialMessage?.data['type'] == 'vehicle') {
+            Navigator.push(context, PageTransition(child: NotificationScreen(), type: PageTransitionType.fade));
+          }
+        });
+      }
+  }
   @override
   void dispose() {
     super.dispose();

@@ -128,6 +128,11 @@ class _RequestNotificationScreenState extends State<RequestNotificationScreen> {
                                 bool success =   await DatabaseService().acceptRequest(requestData[index]["numberPlate"],requestData[index]["requestFrom"],requestData[index]["requestID"]);
                                 if(success)
                                   {
+                                    requestData.removeAt(index);
+                                    if(requestData.length==0)
+                                    {
+                                      _noNotifications=true;
+                                    }
                                     setState(() {
 
                                     });
@@ -159,6 +164,11 @@ class _RequestNotificationScreenState extends State<RequestNotificationScreen> {
                               bool success = await DatabaseService().deleteRequest(requestData[index]["requestID"]);
                               if(success)
                               {
+                                requestData.removeAt(index);
+                                if(requestData.length==0)
+                                  {
+                                    _noNotifications=true;
+                                  }
                                 setState(() {
 
                                 });

@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(height:MediaQuery.of(context).size.height*0.03),
                     Center(
                       child: QrImage(
-                        data: "Scanned by Auto Securo. " + vehicleList[index].ownerName +" contact number: " + globals.phoneNumber +  " took the vehicle:" + vehicleList[index].name + " numberplate: " + vehicleList[index].numberPlate + " on time: " + formatDate(DateTime.now(), [dd, '/',mm, '/', yyyy, ', ',HH, ':', nn,]).toString(),
+                        data: "Scanned by Auto Securo. " + userName +" contact number: " + globals.phoneNumber +  " took the vehicle:" + vehicleList[index].name + " numberplate: " + vehicleList[index].numberPlate + " on time: " + formatDate(DateTime.now(), [dd, '/',mm, '/', yyyy, ', ',HH, ':', nn,]).toString(),
                         version: QrVersions.auto,
                         size: MediaQuery.of(context).size.height * 0.25,
                       ),
